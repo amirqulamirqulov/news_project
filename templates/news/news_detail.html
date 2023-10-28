@@ -1,0 +1,17 @@
+{% extends 'news/base.html' %}
+
+{% block title %}
+News detail
+{% endblock title %}
+
+{% block content %}
+
+        <div class="card" style="width: 70%; margin-left: 180px;">
+            <img src="{{ news.images.url }}" alt="Image Description" style="max-height: 500px;">
+            <div class="card-content">
+                <h2 style="font-size: 25px;">{{ news.title }}</h2>
+                <p style="font-size: 15px;">{{ news.body }}</p>
+            </div>
+        </div>
+
+{% endblock content %}
