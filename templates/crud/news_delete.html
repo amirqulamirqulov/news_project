@@ -1,0 +1,22 @@
+{% extends 'news/base.html' %}
+{% load static %}
+
+{% block title %}
+{{ news.title }} delete
+{% endblock title %}
+
+
+{% block content %}
+<div style="margin: 20px; padding-top: 20px;">
+    <h2>O'chirishni tasdiqlash</h2>
+    <br>
+    <h4>{{ news.title | truncatewords:3 }}... sarlavhali yangilikni o'chirishni istaysizmi?</h4>
+
+    <form method="post">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-success" name="submit" value="yes">Tasdiqlayman</button>
+      <a class="btn btn-danger" href="{% url 'home_page' %}">Yo'q</a>
+    </form>
+</div>
+
+{% endblock content %}

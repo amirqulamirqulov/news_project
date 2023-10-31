@@ -1,7 +1,9 @@
 from django.shortcuts import render, get_object_or_404, HttpResponse
 from .models import News, Category
-from django.views.generic import TemplateView, ListView, DetailView
+from django.views.generic import TemplateView, ListView, DetailView, UpdateView, DeleteView, CreateView
 from .forms import ContactForm
+from django.urls import reverse_lazy
+from django.utils.text import slugify
 
 
 # Create your views here.
@@ -21,9 +23,6 @@ class NewsDetailView(DetailView):
     context_object_name = "news"
     slug_field = 'slug'
     slug_url_kwarg = 'slug'
-
-
-
 
 
 # def newsdetailview(request, new):
@@ -133,8 +132,6 @@ class LocalListView(ListView):
         return local_news_list
 
 
-
-
 class TechnalogyListView(ListView):
     model = News
     template_name = 'news/technalogy_news.html'
@@ -175,3 +172,29 @@ class SportListView(ListView):
         for i in range(0, len(news_list), 3):
             local_news_list.append(news_list[i:i + 3])
         return local_news_list
+
+
+class NewsUpdateView(UpdateView):
+    model = News
+    fields = ('title', 'body', 'category', 'status')
+    template_name = "crud/news_update.html"
+    context_object_name = "news"
+
+
+class NewsDeleteView(DeleteView):
+    model = News
+    template_name = 'crud/news_delete.html'
+    success_url = reverse_lazy('home_page')
+    context_object_name = "news"
+
+
+class NewsCreateView(CreateView):
+    model = News
+    template_name = "crud/news_create.html"
+    fields = ("title", "body", "category", "images", "status")
+
+    def form_valid(self, form):
+        # Automatically generate a slug from the title
+        title = form.cleaned_data['title']
+        form.instance.slug = slugify(title)
+        return super().form_valid(form)

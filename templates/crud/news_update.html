@@ -1,0 +1,19 @@
+{% extends 'news/base.html' %}
+{% load static %}
+
+{% block title %}
+{{ news.title }} update
+{% endblock title %}
+
+{% block content %}
+
+<h2>Yangilikni tahrirlash.</h2>
+<br>
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-success">Update</button>
+    <a  class="btn btn-primary" href="{{news.get_absolute_url}}">Orqaga</a>
+</form>
+
+{% endblock content %}

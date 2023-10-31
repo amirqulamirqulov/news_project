@@ -11,7 +11,10 @@ News detail
             <div class="card-content">
                 <h2 style="font-size: 25px;">{{ news.title }}</h2>
                 <p style="font-size: 15px;">{{ news.body }}</p>
+                <a href="{% url 'news_update' news.slug %}">Update</a>
+                <a href="{% url 'news_delete' news.slug %}" style="background-color: red;">Delete</a>
             </div>
         </div>
+
 
 {% endblock content %}
