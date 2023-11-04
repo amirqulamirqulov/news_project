@@ -39,7 +39,14 @@
             </ul>
           </div>
           <div class="header_top_right">
+            {% if request.user.is_authenticated %}
+            <p><a href="{% url 'user_profile' %}" style="color: white;">My profile</a></p>
+            {% else %}
+            <p><a href="{% url 'register' %}" style="color: white;">Signup</a></p>
+            <p><a href="{% url 'login' %}" style="color: white;">Login</a></p>
+            {% endif %}
             <p>{% now "js F Y H : i" %}</p>
+
           </div>
         </div>
       </div>

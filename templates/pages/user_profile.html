@@ -1,0 +1,25 @@
+{% extends 'news/base.html' %}
+{% load static %}
+
+{% block title %}
+profile
+{% endblock title %}
+
+
+{% block content %}
+<h2>Xush kelibsiz. {{ user.username }}</h2>
+<br>
+<h3>Siz haqingizda ma'lumot</h3>
+<ul>
+    <li> username: {{user.username}}</li>
+    <li> first name: {{user.first_name}} </li>
+    <li> last name: {{user.last_name}} </li>
+    <li> email: {{user.email}} </li>
+</ul>
+<br>
+<a style="color: red;" href="{% url 'password_change' %}">Change password</a>
+
+<a style="color: green; margin-left: 15px;" href="{% url 'logout' %}">Log Out</a>
+<br>
+
+{% endblock content %}
