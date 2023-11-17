@@ -1,4 +1,5 @@
 {% extends 'news/base.html' %}
+{% load hitcount_tags %}
 
 {% block title %}
 News detail
@@ -11,10 +12,38 @@ News detail
             <div class="card-content">
                 <h2 style="font-size: 25px;">{{ news.title }}</h2>
                 <p style="font-size: 15px;">{{ news.body }}</p>
+                {% if request.user.is_authenticated and request.user.is_superuser %}
                 <a href="{% url 'news_update' news.slug %}">Update</a>
                 <a href="{% url 'news_delete' news.slug %}" style="background-color: red;">Delete</a>
+                {% endif %}
+            </div>
+        </div> <br>
+        <h4 style="margin-left:10px;"> Bu yangilikdagi izohlar soni: {{comment_count}}</h4>
+        {% for comment in comments %}
+        <div style="padding: 10px;">
+            <p>
+                <span class="font-weight-bold">User: </span>
+                {{comment.user}} </p>
+            <p>Created time:
+            <span class="text-muted font-weight-normal">{{comment.created_time}}</span>
+            </p>
+
+            {{comment.body | linebreaks}}
+        </div>
+        {% endfor %}
+
+        {% if request.user.is_authenticated %}
+        <div class="col-md-8 card mb-4 mt-3">
+            <div class="card-body">
+                <h4>Izoh qoldirish</h4>
+                <form method="post">
+                    {% csrf_token %}
+                    {{ comment_form.as_p }}
+                    <button type="submit" class="btn btn-primary btn-lg">Yuborish</button>
+                </form>
             </div>
         </div>
+        {% endif %}
 
 
 {% endblock content %}

@@ -1,0 +1,18 @@
+{% extends 'news/base.html' %}
+
+{% block title %}
+update profile
+{% endblock title %}
+
+{% block content %}
+
+<h2>Foydalanuvchi ma'lumotlarini tahrirlash.</h2>
+<p>Bu yerda o'z ma'lumotlaringizni tahrirlashingiz mumkin.</p>
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ user_form.as_p }}
+    {{ profile_form.as_p }}
+    <button type="submit" class="btn btn-success">Tahrirlash</button>
+</form>
+<br>
+{% endblock content %}

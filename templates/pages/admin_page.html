@@ -1,0 +1,59 @@
+{% extends 'news/base.html' %}
+
+{% block title %}
+admin page
+{% endblock title %}
+
+{% block content %}
+<h2>Admin page</h2>
+<br>
+<table class="table table-bordered table-striped table-responsive">
+    <tr>
+        <th>Username</th>
+        <th>First name</th>
+        <th>Last name</th>
+        <th>Image</th>
+        <th>Date of birth</th>
+    </tr>
+    {% for admin_user in admin_list %}
+    <tr>
+        <td>{{admin_user.username}}</td>
+        <td>{{admin_user.first_name}}</td>
+        <td>{{admin_user.last_name}}</td>
+        <td><img src="{{admin_user.profile.image.url}}" width="20%" height="10%"></td>
+        <td>{{admin_user.profile.date_of_birth}}</td>
+    </tr>
+    {%endfor%}
+</table>
+    <br>
+    <h3>Comment list</h3>
+    <br>
+    <form method="POST" action="{% url 'admin_page' %}">
+            {% csrf_token %}
+    <table class="table table-bordered table-striped table-responsive">
+        <tr>
+            <th>Body</th>
+            <th>Created time</th>
+            <th>Active</th>
+        </tr>
+
+        {% for comment in comment_list %}
+        <tr>
+            <td>{{comment.body}}</td>
+            <td>{{comment.created_time}}</td>
+            <td>
+                {% if comment.active  %}
+                <input  type="checkbox" checked name="{{comment.id}}">
+                {% else %}
+                <input  type="checkbox" name="{{comment.id}}">
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+        <button type="submit" class="btn btn-primary" style="margin-left:1084px;">Save</button>
+    </form>
+
+
+
+{% endblock content %}

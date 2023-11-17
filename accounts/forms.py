@@ -1,5 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User
+from .models import Profile
 
 class LoginForm(forms.Form):
     username = forms.CharField()
@@ -25,3 +26,18 @@ class UserRegisterForm(forms.ModelForm):
         if data['password'] != data['password_2']:
             raise forms.ValidationError("Ikkala parolingiz ham bir biriga teng bo'lishi kerak")
         return data['password_2']
+
+
+
+class UserUpdateForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['first_name', 'last_name', 'email']
+
+class ProfileUpdateForm(forms.ModelForm):
+    class Meta:
+        model = Profile
+        fields = ['date_of_birth', 'image']
+
+
+

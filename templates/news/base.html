@@ -36,10 +36,14 @@
               <li><a href="{% url 'home_page' %}">Home</a></li>
               <li><a href="#">About</a></li>
               <li><a href="{% url 'contact_page' %}">Contact</a></li>
+              {% if request.user.is_authenticated and request.user.is_superuser %}
+              <li><a href="{% url 'admin_page' %}">Admin</a></li>
+              {% endif %}
             </ul>
           </div>
           <div class="header_top_right">
             {% if request.user.is_authenticated %}
+            <p><a href="{% url 'logout' %}" style="color: white;">Logout</a></p>
             <p><a href="{% url 'user_profile' %}" style="color: white;">My profile</a></p>
             {% else %}
             <p><a href="{% url 'register' %}" style="color: white;">Signup</a></p>
@@ -71,7 +75,13 @@
           <li><a href="{% url 'sport_page' %}">Sport</a></li>
           <li><a href="{% url 'technalogy_page' %}">Technalogy</a></li>
           <li><a href="{% url 'contact_page' %}">Contact Us</a></li>
-          <li><a href="{% url '404_page' %}">404 Page</a></li>
+<!--          <li><a href="{% url '404_page' %}">404 Page</a></li>-->
+          <li>
+            <form method="get" action="{% url 'search_list' %}">
+              {% csrf_token %}
+              <input type="search" name="q" placeholder="Qidiruv.." class="form-control" style="background-color: #3D3C3C; margin-top: 8px; color: white;">
+            </form>
+          </li>
         </ul>
       </div>
     </nav>

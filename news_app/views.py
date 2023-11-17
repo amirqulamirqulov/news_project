@@ -1,11 +1,12 @@
 from django.shortcuts import render, get_object_or_404, HttpResponse
 from .models import News, Category
 from django.views.generic import TemplateView, ListView, DetailView, UpdateView, DeleteView, CreateView
-from .forms import ContactForm
+from .forms import ContactForm, CommentForm
 from django.urls import reverse_lazy
 from django.utils.text import slugify
-
-
+from news_project.custom_permission import OnlySuperuserPermission
+from django.db.models import Q
+from hitcount.views import HitCountDetailView, HitCountMixin
 # Create your views here.
 
 
@@ -17,12 +18,53 @@ def newslistview(request):
     return render(request, "news/news_list.html", context)
 
 
+# Import your CommentForm
+
+
+class PostCountHitDetailView(HitCountDetailView):
+    model = News
+    count_hit = True
+    slug_field = 'slug'
+
+
 class NewsDetailView(DetailView):
     model = News
     template_name = "news/news_detail.html"
     context_object_name = "news"
     slug_field = 'slug'
     slug_url_kwarg = 'slug'
+
+    def post(self, request, slug, *args, **kwargs):
+        comment_form = CommentForm(request.POST)
+        if comment_form.is_valid():
+            new_comment = comment_form.save(commit=False)
+            new_comment.news = self.get_object()
+            new_comment.user = request.user  # Assuming you have a user associated with the comment
+            new_comment.save()
+            comment_form = CommentForm()  # Clear the form
+            comments = self.get_object().comments.filter(active=True)
+            comment_count = comments.count()
+
+        context = {
+            'comment_form': comment_form,
+            'news': self.get_object(),
+            'comments': comments,
+            'comment_count': comment_count
+        }
+        return render(request, self.template_name, context)
+
+    def get(self, request, slug, *args, **kwargs):
+        comment_form = CommentForm()
+        news = self.get_object()
+        comments = news.comments.filter(active=True)
+        comment_count = comments.count()
+        context = {
+            'comment_form': comment_form,
+            'news': news,
+            'comments': comments,
+            'comment_count': comment_count
+        }
+        return render(request, self.template_name, context)
 
 
 # def newsdetailview(request, new):
@@ -174,21 +216,21 @@ class SportListView(ListView):
         return local_news_list
 
 
-class NewsUpdateView(UpdateView):
+class NewsUpdateView(OnlySuperuserPermission, UpdateView):
     model = News
     fields = ('title', 'body', 'category', 'status')
     template_name = "crud/news_update.html"
     context_object_name = "news"
 
 
-class NewsDeleteView(DeleteView):
+class NewsDeleteView(OnlySuperuserPermission, DeleteView):
     model = News
     template_name = 'crud/news_delete.html'
     success_url = reverse_lazy('home_page')
     context_object_name = "news"
 
 
-class NewsCreateView(CreateView):
+class NewsCreateView(OnlySuperuserPermission, CreateView):
     model = News
     template_name = "crud/news_create.html"
     fields = ("title", "body", "category", "images", "status")
@@ -198,3 +240,24 @@ class NewsCreateView(CreateView):
         title = form.cleaned_data['title']
         form.instance.slug = slugify(title)
         return super().form_valid(form)
+
+
+class SearchNewsView(ListView):
+    model = News
+    template_name = 'news/search_list.html'
+    context_object_name = 'all_news'
+
+    def get_queryset(self):
+        query = self.request.GET.get('q')
+        search_news_list = []
+        news = News.objects.filter(
+            Q(title__icontains=query) | Q(body__icontains=query)
+        )
+        news_list = list(news)
+        for i in range(0, len(news_list), 3):
+            search_news_list.append(news_list[i:i + 3])
+        return search_news_list
+
+
+
+
