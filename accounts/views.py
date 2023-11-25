@@ -9,7 +9,7 @@ from .models import Profile
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
-from news_app.models import Comment
+from news_app.models import Comment, Category
 
 def user_login(request):
     if request.method == 'POST':
@@ -117,10 +117,12 @@ def admin_page_view(request):
     if request.method == 'GET':
 
         admin_list = User.objects.filter(is_superuser=True)
+        categories = Category.objects.all()
         comment_list = Comment.objects.all()
         context = {
             "admin_list": admin_list,
             'comment_list': comment_list,
+            'category': categories,
         }
         return render(request, "pages/admin_page.html", context)
     else:
@@ -135,10 +137,11 @@ def admin_page_view(request):
 
         comment_list = Comment.objects.all()
         admin_list = User.objects.filter(is_superuser=True)
-
+        categories = Category.objects.all()
         context = {
             "admin_list": admin_list,
             'comment_list': comment_list,
+            'category': categories,
         }
         return render(request, "pages/admin_page.html", context)
 

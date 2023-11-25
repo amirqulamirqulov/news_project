@@ -6,6 +6,7 @@ admin page
 
 {% block content %}
 <h2>Admin page</h2>
+<p><a href="{% url 'news_create' %}">Yangilik qo'shish</a></p>
 <br>
 <table class="table table-bordered table-striped table-responsive">
     <tr>
@@ -53,7 +54,25 @@ admin page
     </table>
         <button type="submit" class="btn btn-primary" style="margin-left:1084px;">Save</button>
     </form>
+    <br>
+    <h3>Category list</h3>
+    <br>
 
-
+    <table class="table table-bordered table-striped table-responsive">
+        <tr>
+            <th>Name</th>
+            <th></th>
+        </tr>
+        {% for cate in category %}
+        <tr>
+            <td style="padding-top: 18px;">{{cate.name}}</td>
+            <td>
+                <button style=" float:right;   border-radius: 5px;"  class = "btn btn-primary"><a href="{% url 'category_update' cate.pk %}">Update</a></button>
+                <button style=" float:right;  margin-right: 10px; border-radius: 5px;" class = "btn btn-danger"><a href="{% url 'category_delete' cate.pk %}">Delete</a></button>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+    <button  class="btn btn-success" style="margin-left:1015px;"><a href="{% url 'category_create' %}">Create category</a></button>
 
 {% endblock content %}

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 {% load static %}
+{% load i18n %}
 <html>
 <head>
 <title>
@@ -39,6 +40,22 @@
               {% if request.user.is_authenticated and request.user.is_superuser %}
               <li><a href="{% url 'admin_page' %}">Admin</a></li>
               {% endif %}
+              <li>
+                  <form action="{% url 'set_language' %}" method="post">{% csrf_token %}
+                      <input name="next" type="hidden" value="{{ redirect_to }}">
+                      <select name="language">
+                          {% get_current_language as LANGUAGE_CODE %}
+                          {% get_available_languages as LANGUAGES %}
+                          {% get_language_info_list for LANGUAGES as languages %}
+                          {% for language in languages %}
+                              <option value="{{ language.code }}"{% if language.code == LANGUAGE_CODE %} selected{% endif %}>
+                                  {{ language.name_local }} ({{ language.code }})
+                              </option>
+                          {% endfor %}
+                      </select>
+                      <input type="submit" value="Go">
+                  </form>
+              </li>
             </ul>
           </div>
           <div class="header_top_right">
@@ -70,10 +87,10 @@
       <div id="navbar" class="navbar-collapse collapse">
         <ul class="nav navbar-nav main_nav">
           <li class="active"><a href="{% url 'home_page' %}"><span class="fa fa-home desktop-home"></span><span class="mobile-show">Home</span></a></li>
-          <li><a href="{% url 'local_page' %}">Local</a></li>
-          <li><a href="{% url 'abroad_page' %}">Abroad</a></li>
-          <li><a href="{% url 'sport_page' %}">Sport</a></li>
-          <li><a href="{% url 'technalogy_page' %}">Technalogy</a></li>
+          {% for cate in categories %}
+
+          <li><a href="{% url 'categories' cate.name_en %}">{{cate.name}}</a></li>
+          {% endfor %}
           <li><a href="{% url 'contact_page' %}">Contact Us</a></li>
 <!--          <li><a href="{% url '404_page' %}">404 Page</a></li>-->
           <li>

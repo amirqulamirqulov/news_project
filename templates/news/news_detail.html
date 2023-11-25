@@ -11,7 +11,7 @@ News detail
             <img src="{{ news.images.url }}" alt="Image Description" style="max-height: 500px;">
             <div class="card-content">
                 <h2 style="font-size: 25px;">{{ news.title }}</h2>
-                <p style="font-size: 15px;">{{ news.body }}</p>
+                <p style="font-size: 15px;">{{ news.body }} {% get_hit_count for news %}</p>
                 {% if request.user.is_authenticated and request.user.is_superuser %}
                 <a href="{% url 'news_update' news.slug %}">Update</a>
                 <a href="{% url 'news_delete' news.slug %}" style="background-color: red;">Delete</a>

@@ -7,6 +7,8 @@ from django.utils.text import slugify
 from news_project.custom_permission import OnlySuperuserPermission
 from django.db.models import Q
 from hitcount.views import HitCountDetailView, HitCountMixin
+
+
 # Create your views here.
 
 
@@ -21,10 +23,10 @@ def newslistview(request):
 # Import your CommentForm
 
 
-class PostCountHitDetailView(HitCountDetailView):
-    model = News
-    count_hit = True
-    slug_field = 'slug'
+# class PostCountHitDetailView(HitCountDetailView):
+#     model = News
+#     count_hit = True
+#     slug_field = 'slug'
 
 
 class NewsDetailView(DetailView):
@@ -33,6 +35,7 @@ class NewsDetailView(DetailView):
     context_object_name = "news"
     slug_field = 'slug'
     slug_url_kwarg = 'slug'
+    count_hit = True
 
     def post(self, request, slug, *args, **kwargs):
         comment_form = CommentForm(request.POST)
@@ -112,12 +115,15 @@ class HomePageView(ListView):
         context = super().get_context_data(**kwargs)
         context['categories'] = Category.objects.all()
         context['news_list'] = News.published.all().order_by('-publish_time')[:5]
-        context['local_news_main'] = News.published.all().filter(category__name="Mahalliy").order_by('-publish_time')[
+        context['local_news_main'] = News.published.all().filter(category__name_uz="Mahalliy").order_by(
+            '-publish_time')[
                                      :5]
-        context['sport_news_main'] = News.published.all().filter(category__name="Sport").order_by('-publish_time')[:5]
-        context['technalogy_news_main'] = News.published.all().filter(category__name="Texnalogiya").order_by(
+        context['sport_news_main'] = News.published.all().filter(category__name_uz="Sport").order_by('-publish_time')[
+                                     :5]
+        context['technalogy_news_main'] = News.published.all().filter(category__name_uz="Texnalogiya").order_by(
             '-publish_time')[:5]
-        context['abroad_news_main'] = News.published.all().filter(category__name="Xorij").order_by('-publish_time')[:5]
+        context['abroad_news_main'] = News.published.all().filter(category__name_uz="Xorij").order_by('-publish_time')[
+                                      :5]
         return context
 
 
@@ -160,65 +166,81 @@ def errorpageview(request):
     return render(request, 'news/404.html', context)
 
 
-class LocalListView(ListView):
-    model = News
-    template_name = 'news/local_news.html'
-    context_object_name = 'local_news'
+# class LocalListView(ListView):
+#     model = News
+#     template_name = 'news/local_news.html'
+#     context_object_name = 'local_news'
+#
+#     def get_queryset(self):
+#         local_news_list = []
+#         news = self.model.published.filter(category__name="Mahalliy")
+#         news_list = list(news)
+#         for i in range(0, len(news_list), 3):
+#             local_news_list.append(news_list[i:i + 3])
+#         return local_news_list
 
-    def get_queryset(self):
+
+class CategoryView(ListView):
+    model = News
+    template_name = 'news/listview.html'
+    context_object_name = 'news'
+
+    def get(self, request, slug):
         local_news_list = []
-        news = self.model.published.filter(category__name="Mahalliy")
+        news = self.model.published.filter(category__name_en=slug)
         news_list = list(news)
         for i in range(0, len(news_list), 3):
             local_news_list.append(news_list[i:i + 3])
-        return local_news_list
+        return render(request, self.template_name, {'news': local_news_list})
 
 
-class TechnalogyListView(ListView):
-    model = News
-    template_name = 'news/technalogy_news.html'
-    context_object_name = 'technalogy_news'
-
-    def get_queryset(self):
-        local_news_list = []
-        news = self.model.published.filter(category__name="Texnalogiya")
-        news_list = list(news)
-        for i in range(0, len(news_list), 3):
-            local_news_list.append(news_list[i:i + 3])
-        return local_news_list
-
-
-class AbroadListView(ListView):
-    model = News
-    template_name = 'news/abroad_news.html'
-    context_object_name = 'abroad_news'
-
-    def get_queryset(self):
-        local_news_list = []
-        news = self.model.published.filter(category__name="Xorij")
-        news_list = list(news)
-        for i in range(0, len(news_list), 3):
-            local_news_list.append(news_list[i:i + 3])
-        return local_news_list
-
-
-class SportListView(ListView):
-    model = News
-    template_name = 'news/sport_news.html'
-    context_object_name = 'sport_news'
-
-    def get_queryset(self):
-        local_news_list = []
-        news = self.model.published.filter(category__name="Sport")
-        news_list = list(news)
-        for i in range(0, len(news_list), 3):
-            local_news_list.append(news_list[i:i + 3])
-        return local_news_list
+# class TechnalogyListView(ListView):
+#     model = News
+#     template_name = 'news/technalogy_news.html'
+#     context_object_name = 'technalogy_news'
+#
+#     def get_queryset(self):
+#         local_news_list = []
+#         news = self.model.published.filter(category__name="Texnalogiya")
+#         news_list = list(news)
+#         for i in range(0, len(news_list), 3):
+#             local_news_list.append(news_list[i:i + 3])
+#         return local_news_list
+#
+#
+# class AbroadListView(ListView):
+#     model = News
+#     template_name = 'news/abroad_news.html'
+#     context_object_name = 'abroad_news'
+#
+#     def get_queryset(self):
+#         local_news_list = []
+#         news = self.model.published.filter(category__name="Xorij")
+#         news_list = list(news)
+#         for i in range(0, len(news_list), 3):
+#             local_news_list.append(news_list[i:i + 3])
+#         return local_news_list
+#
+#
+# class SportListView(ListView):
+#     model = News
+#     template_name = 'news/sport_news.html'
+#     context_object_name = 'sport_news'
+#
+#     def get_queryset(self):
+#         local_news_list = []
+#         news = self.model.published.filter(category__name="Sport")
+#         news_list = list(news)
+#         for i in range(0, len(news_list), 3):
+#             local_news_list.append(news_list[i:i + 3])
+#         return local_news_list
 
 
 class NewsUpdateView(OnlySuperuserPermission, UpdateView):
     model = News
-    fields = ('title', 'body', 'category', 'status')
+    fields = ('title', "title_uz", "title_en",
+              "title_ru", 'body', "body_uz",
+              "body_en", "body_ru", 'category', 'status')
     template_name = "crud/news_update.html"
     context_object_name = "news"
 
@@ -233,7 +255,9 @@ class NewsDeleteView(OnlySuperuserPermission, DeleteView):
 class NewsCreateView(OnlySuperuserPermission, CreateView):
     model = News
     template_name = "crud/news_create.html"
-    fields = ("title", "body", "category", "images", "status")
+    fields = ("title", "title_uz", "title_en", "title_ru",
+              "body", "body_uz", "body_en", "body_ru",
+              "category", "images", "status")
 
     def form_valid(self, form):
         # Automatically generate a slug from the title
@@ -241,6 +265,25 @@ class NewsCreateView(OnlySuperuserPermission, CreateView):
         form.instance.slug = slugify(title)
         return super().form_valid(form)
 
+
+class CategoryUpdateView(OnlySuperuserPermission, UpdateView):
+    model = Category
+    fields = ('name', 'name_uz', 'name_en', 'name_ru')
+    template_name = "crud/category_update.html"
+    context_object_name = 'category'
+
+
+class CategoryDeleteView(OnlySuperuserPermission, DeleteView):
+    model = Category
+    template_name = 'crud/category_delete.html'
+    success_url = reverse_lazy('home_page')
+    context_object_name = 'category'
+
+class CategoryCreateView(OnlySuperuserPermission, CreateView):
+    model = Category
+    fields = ('name', 'name_uz', 'name_en', 'name_ru')
+    template_name = 'crud/category_create.html'
+    context_object_name = 'category'
 
 class SearchNewsView(ListView):
     model = News
@@ -257,7 +300,3 @@ class SearchNewsView(ListView):
         for i in range(0, len(news_list), 3):
             search_news_list.append(news_list[i:i + 3])
         return search_news_list
-
-
-
-
