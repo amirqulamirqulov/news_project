@@ -135,12 +135,12 @@ MODELTRANSLATION_DEFAULT_LANGUAGE = 'uz'
 
 STATIC_URL = '/static/'
 
-STATIC_ROOT = "/home/djangomo/django-mohirdev-demo.uz/django/staticfiles"
-STATICFILES_DIRS = ("/home/djangomo/django-mohirdev-demo.uz/django/static",)
+# STATIC_ROOT = "/home/djangomo/django-mohirdev-demo.uz/django/staticfiles"
+# STATICFILES_DIRS = ("/home/djangomo/django-mohirdev-demo.uz/django/static",)
 
 # locale
-# STATICFILES_DIRS = [BASE_DIR / 'static']
-# STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATICFILES_DIRS = [BASE_DIR / 'static']
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 
 STATICFILES_FINDERS = [
@@ -150,9 +150,9 @@ STATICFILES_FINDERS = [
 
 
 MEDIA_URL = 'media/'
-MEDIA_ROOT = "/home/djangomo/django-mohirdev-demo.uz/django/media"
+# MEDIA_ROOT = "/home/djangomo/django-mohirdev-demo.uz/django/media"
 # locale
-# MEDIA_ROOT = BASE_DIR / 'media'
+MEDIA_ROOT = BASE_DIR / 'media'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
